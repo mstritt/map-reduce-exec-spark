@@ -9,6 +9,7 @@
 
 /gradle/
 settings.gradle
+custom.gradle
 
 ## Directory-based project format:
 .idea/
