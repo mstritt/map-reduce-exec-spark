@@ -17,11 +17,20 @@
  *
  */
 
+buildscript {
+    repositories {
+        mavenCentral()
+        //Needed only for SNAPSHOT versions
+        //maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+    }
+    dependencies {
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3"
+    }
+}
+
 apply plugin: 'java'
 apply plugin: 'maven-publish'
-if (file('custom.gradle').exists()) {
-    apply from: 'custom.gradle'
-}
+
 
 group = 'com.actelion.research'
 ext.versionStr = '1.0.1'
@@ -80,5 +89,9 @@ dependencies {
     compile(group: 'org.apache.spark', name: 'spark-core_2.10', version: '1.6.0') {
         exclude(module: 'servlet-api')
     }
-    testCompile 'junit:junit:4+'
+    testCompile 'junit:junit:[4.0,)'
+}
+
+if (file('custom.gradle').exists()) {
+    apply from: 'custom.gradle'
 }
