@@ -33,7 +33,7 @@ apply plugin: 'maven-publish'
 
 
 group = 'com.actelion.research'
-ext.versionStr = '1.0.1'
+ext.versionStr = '1.0.2'
 ext.version=versionStr
 
 description = 'mapReduceExecSpark'
@@ -84,7 +84,7 @@ task docJar(type: org.gradle.api.tasks.bundling.Jar, dependsOn: 'javadoc') {
 
 
 dependencies {
-    compile 'com.actelion.research:map-reduce-generic:1.0.7'
+    compile 'com.actelion.research:map-reduce-generic:1.0.8'
     // compile 'org.apache.hadoop:hadoop-client:1.6.1'
     compile(group: 'org.apache.spark', name: 'spark-core_2.10', version: '1.6.0') {
         exclude(module: 'servlet-api')
