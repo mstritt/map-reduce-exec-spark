@@ -222,6 +222,8 @@ public final class MapReduceExecutorSparkExec<T, K, V> implements IMapReduceExec
         String resultDir = "sparkresults";
         if (args.length>1)
             resultDir = args[1];
+        System.out.println("result dir: "+resultDir);
+        new File(resultDir).mkdirs();
         MapReduceExecutorSparkExec mapReduceExecutorSparkExec = new MapReduceExecutorSparkExec(args[0],resultDir);
     }
 }

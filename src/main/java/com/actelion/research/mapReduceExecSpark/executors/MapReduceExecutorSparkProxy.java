@@ -118,7 +118,6 @@ public final class MapReduceExecutorSparkProxy<T, K, V> implements IMapReduceExe
 
     private void deployTask(String serUUID, int parallelism, String resultDir) throws IOException {
         String host_port = "spark-imaging.idorsia.com:80";
-        //String host_port = "10.64.16.62:14580";
         int numCPUs = Math.min((int)(totalClusterCores*clusterUsage), coresPerJob*parallelism);
 
         String payload = "{" +
@@ -164,6 +163,11 @@ public final class MapReduceExecutorSparkProxy<T, K, V> implements IMapReduceExe
         System.out.println(responseString);
 
     }
+
+
+//    public Map<K,V> readResult() {
+//
+//    }
 
 
     public double getProgress() {

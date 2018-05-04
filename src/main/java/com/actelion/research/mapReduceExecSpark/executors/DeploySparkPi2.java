@@ -22,7 +22,7 @@ import java.util.List;
 public class DeploySparkPi2 {
     public static void main(String[] args) throws Exception {
         IMapReduce<Long, String, Double> mr = new CalcPi2();
-        IMapReduceExecutor<Long, String, Double> executor = new MapReduceExecutorSparkProxy<>("SparkPi",1,1,0.75d,"map-reduce-exec-spark-all-1.1.0.jar","res2");
+        IMapReduceExecutor<Long, String, Double> executor = new MapReduceExecutorSparkProxy<>("SparkPi",1,1,0.75d,"map-reduce-exec-spark-all-1.1.2.jar","res2");
 
         List<Long> input = new ArrayList<Long>();
         for (int i = 0; i < 100; i++) input.add(100000L);
