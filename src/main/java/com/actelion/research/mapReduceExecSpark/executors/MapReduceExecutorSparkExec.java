@@ -54,7 +54,7 @@ public final class MapReduceExecutorSparkExec<T, K, V> implements IMapReduceExec
     private String jobGroupId = "Orbit";
 
 
-    public MapReduceExecutorSparkExec(String input, String resultDir) {
+    public MapReduceExecutorSparkExec(String input, String resultDir, String smbUsername, String smbPassword, String smbDomain, String smbShare) {
         this.taskUUID = UUID.randomUUID().toString();
         InputStream is = null;
         try  {
@@ -62,7 +62,7 @@ public final class MapReduceExecutorSparkExec<T, K, V> implements IMapReduceExec
                 is = new URL(input).openStream();
             } else {
                 // assume samba
-                SmbUtils smb = new SmbUtils("grid","gridservice","","smb://isis.idorsia.com/grid$");
+                SmbUtils smb = new SmbUtils(smbUsername,smbPassword,smbDomain,smbShare);
                 byte[] bytes = smb.readFromRemote(input);
                 is = new ByteArrayInputStream(bytes);
             }
@@ -104,7 +104,7 @@ public final class MapReduceExecutorSparkExec<T, K, V> implements IMapReduceExec
                 fos.flush();
             }
             // store on remote context store
-            IRemoteContextStore resultSaver = new SmbUtils("grid","gridservice","","smb://isis.idorsia.com/grid$");
+            IRemoteContextStore resultSaver = new SmbUtils(smbUsername,smbPassword,smbDomain,smbShare);
             resultSaver.copyToRemote(bytes,resultDir, taskUUID);
 
         } catch (Exception e) {
@@ -224,6 +224,27 @@ public final class MapReduceExecutorSparkExec<T, K, V> implements IMapReduceExec
             resultDir = args[1];
         System.out.println("result dir: "+resultDir);
         new File(resultDir).mkdirs();
-        MapReduceExecutorSparkExec mapReduceExecutorSparkExec = new MapReduceExecutorSparkExec(args[0],resultDir);
+
+        String smbUsername = "";
+        if (args.length>2)
+            smbUsername = args[2];
+        System.out.println("smbUsername: "+smbUsername);
+
+        String smbPassword = "";
+        if (args.length>3)
+            smbPassword = args[3];
+        System.out.println("smbPassword: "+smbPassword);
+
+        String smbDomain = "";
+        if (args.length>4)
+            smbDomain = args[4];
+        System.out.println("smbDomain: "+smbDomain);
+
+        String smbShare = "";
+        if (args.length>5)
+            smbShare = args[5];
+        System.out.println("smbShare: "+smbShare);
+
+        MapReduceExecutorSparkExec mapReduceExecutorSparkExec = new MapReduceExecutorSparkExec(args[0],resultDir,smbUsername,smbPassword,smbDomain,smbShare);
     }
 }

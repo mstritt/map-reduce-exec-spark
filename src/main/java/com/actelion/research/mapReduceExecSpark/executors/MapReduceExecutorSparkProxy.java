@@ -50,12 +50,17 @@ public final class MapReduceExecutorSparkProxy<T, K, V> implements IMapReduceExe
     private double clusterUsage = 0.75;
     private int coresPerJob = 10;
     private int memPerJobGB = 62;
-    private String fatJarName = "orbit-image-analysis-all-2.81.jar";
+    private String fatJarName;
     private String resultDir;
-    public static final SmbUtils smbUtils = new SmbUtils("grid","gridservice","", "smb://isis.idorsia.com/grid$");
+    private String smbUsername;
+    private String smbPassword;
+    private String smbDomain;
+    private String smbShare;
+    private String host_port;
+    private final SmbUtils smbUtils;
 
 
-    public MapReduceExecutorSparkProxy(String appName, int coresPerJob, int memPerJobGB, double clusterUsage, String fatJarName, String resultDir) {
+    public MapReduceExecutorSparkProxy(String host_port, String appName, int coresPerJob, int memPerJobGB, double clusterUsage, String fatJarName, String resultDir, String smbUsername, String smbPassword, String smbDomain, String smbShare) {
         this.appName = appName;
         //if (jars != null) this.jars = jars;
         this.coresPerJob = coresPerJob;
@@ -63,6 +68,12 @@ public final class MapReduceExecutorSparkProxy<T, K, V> implements IMapReduceExe
         this.clusterUsage = clusterUsage;
         this.fatJarName = fatJarName;
         this.resultDir = resultDir;
+        this.smbUsername = smbUsername;
+        this.smbPassword = smbPassword;
+        this.smbDomain = smbDomain;
+        this.smbShare = smbShare;
+        this.host_port = host_port;
+        this.smbUtils = new SmbUtils(smbUsername,smbPassword,smbDomain,smbShare);
     }
 
     public Map<K, V> execute(final Collection<T> elements, final IMapReduce<T, K, V> mapReduce) {
@@ -117,15 +128,14 @@ public final class MapReduceExecutorSparkProxy<T, K, V> implements IMapReduceExe
 
 
     private void deployTask(String serUUID, int parallelism, String resultDir) throws IOException {
-        String host_port = "spark-imaging.idorsia.com:80";
         int numCPUs = Math.min((int)(totalClusterCores*clusterUsage), coresPerJob*parallelism);
 
         String payload = "{" +
                 "  \"action\": \"CreateSubmissionRequest\"," +
 
                 "  \"mainClass\": \"com.actelion.research.mapReduceExecSpark.executors.MapReduceExecutorSparkExec\"," +
-                "  \"appArgs\": [ \"spark/MR-"+serUUID+".ser\",\""+resultDir+"\" ]," +
-                "  \"appResource\": \"/arcite/orbit/"+fatJarName+"\"," +
+                "  \"appArgs\": [ \"spark/MR-"+serUUID+".ser\",\""+resultDir+"\", \""+this.smbUsername+"\",\""+this.smbPassword+"\",\""+this.smbDomain+"\",\""+this.smbShare+"\" ]," +
+                "  \"appResource\": \""+fatJarName+"\"," +
 
                 "  \"clientSparkVersion\": \"2.1.1\"," +
                 "  \"environmentVariables\" : {" +
